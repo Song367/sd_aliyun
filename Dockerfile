@@ -41,16 +41,15 @@ RUN --mount=type=cache,target=/cache --mount=type=cache,target=/root/.cache/pip 
 
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-  git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
-  cd stable-diffusion-webui && \
-  git reset --hard 20ae71faa8ef035c31aa3a410b707d792c8203a3 && \
-  pip install -r requirements_versions.txt
+  git clone https://github.com/Song367/sd_webui_daima.git && \
+  cd sd_webui_daima && git checkout master && \
+  pip install -r requirements.txt
 
 RUN --mount=type=cache,target=/root/.cache/pip  \
   --mount=type=bind,from=xformers,source=/wheel.whl,target=/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64.whl \
   pip install /xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64.whl
 
-ENV ROOT=/stable-diffusion-webui
+ENV ROOT=/sd_webui_daima
 
 
 COPY --from=download /repositories/ ${ROOT}/repositories/
