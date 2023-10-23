@@ -41,15 +41,15 @@ RUN --mount=type=cache,target=/cache --mount=type=cache,target=/root/.cache/pip 
 
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-  git clone https://github.com/Song367/sd_webui_daima.git && \
-  cd sd_webui_daima && git checkout master && \
-  pip install -r requirements.txt
+  git clone https://github.com/Song367/sd_webui_daima.git stable-diffusion-webui && \
+  cd stable-diffusion-webui && git checkout master && \
+  pip install -r requirements_versions.txt
 
 RUN --mount=type=cache,target=/root/.cache/pip  \
   --mount=type=bind,from=xformers,source=/wheel.whl,target=/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64.whl \
   pip install /xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64.whl
 
-ENV ROOT=/sd_webui_daima
+ENV ROOT=/stable-diffusion-webui
 
 
 COPY --from=download /repositories/ ${ROOT}/repositories/
@@ -72,7 +72,7 @@ ENV LD_PRELOAD=libtcmalloc.so
 
 ARG SHA=d3526e9
 RUN --mount=type=cache,target=/root/.cache/pip \
-  cd sd_webui_daima && \
+  cd stable-diffusion-webui && \
   git fetch && \
   git reset --hard ${SHA} && \
   pip install -r requirements_versions.txt
