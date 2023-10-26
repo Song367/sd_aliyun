@@ -78,7 +78,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
   git fetch && \
   pip install -r requirements_versions.txt
 RUN apt-get install -y wget
-RUN cd ${ROOT}/models/Stable-diffusion && wget https://civitai.com/api/download/models/176425
+RUN cd ${ROOT}/models/Stable-diffusion && wget https://huggingface.co/casque/majicmixRealistic_v7/resolve/main/majicmixRealistic_v7.safetensors
 COPY . /docker
 
 # RUN \
