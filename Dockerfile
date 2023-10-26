@@ -43,7 +43,7 @@ RUN --mount=type=cache,target=/cache --mount=type=cache,target=/root/.cache/pip 
 
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-  git clone https://github.com/Song367/sd_webui_daima.git stable-diffusion-webui && \
+  git clone https://gitee.com/Song367/webui_sd.git stable-diffusion-webui && \
   cd stable-diffusion-webui && git checkout master && \
   pip install -r requirements_versions.txt
 
