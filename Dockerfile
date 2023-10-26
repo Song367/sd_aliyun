@@ -76,8 +76,9 @@ ENV LD_PRELOAD=libtcmalloc.so
 RUN --mount=type=cache,target=/root/.cache/pip \
   cd stable-diffusion-webui && ls && \
   git fetch && \
-
   pip install -r requirements_versions.txt
+
+RUN cd ${ROOT}/models/Stable-diffusion && wget https://civitai.com/api/download/models/176425
 COPY . /docker
 
 # RUN \
