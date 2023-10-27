@@ -20,7 +20,7 @@ RUN . /clone.sh clip-interrogator https://github.com/pharmapsychotic/clip-interr
 
 FROM alpine:3.17 as xformers
 RUN apk add --no-cache aria2
-RUN aria2c -x 5 --dir / --out wheel.whl 'https://ghproxy.com/https://github.com/AbdBarho/stable-diffusion-webui-docker/releases/download/6.0.0/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64-pytorch201.whl'
+RUN aria2c -x 5 --dir / --out wheel.whl 'https://github.com/AbdBarho/stable-diffusion-webui-docker/releases/download/6.0.0/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64-pytorch201.whl'
 
 
 FROM python:3.10.9-slim
@@ -43,7 +43,7 @@ RUN --mount=type=cache,target=/cache --mount=type=cache,target=/root/.cache/pip 
 
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-  git clone https://gitee.com/Song367/webui_sd.git stable-diffusion-webui && \
+  git clone https://github.com/Song367/stable-diffusion-webui.git && \
   cd stable-diffusion-webui && git checkout master && \
   pip install -r requirements_versions.txt
 
@@ -78,7 +78,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
   git fetch && \
   pip install -r requirements_versions.txt
 RUN apt-get install -y wget
-RUN cd ${ROOT}/models/Stable-diffusion && wget https://huggingface.co/casque/majicmixRealistic_v7/resolve/main/majicmixRealistic_v7.safetensors
+# RUN cd ${ROOT}/models/Stable-diffusion && wget https://huggingface.co/casque/majicmixRealistic_v7/resolve/main/majicmixRealistic_v7.safetensors
 COPY . /docker
 
 # RUN \
@@ -89,9 +89,16 @@ COPY . /docker
 #   git config --global --add safe.directory '*'
 
 WORKDIR ${ROOT}
+# ENV NVIDIA_VISIBLE_DEVICES=all
+# ENV CLI_ARGS="--xformers  --disable-safe-unpickle --no-half-vae --enable-insecure-extension-access --skip-version-check --no-download-sd-model "
+# EXPOSE 7860
+# RUN chmod +x /docker/entrypoint.sh
+# ENTRYPOINT ["/docker/entrypoint.sh"]
+# CMD python launch.py --listen --api --port 7860 --precision full --no-half ${CLI_ARGS}
+
+
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV CLI_ARGS="--xformers  --disable-safe-unpickle --no-half-vae --enable-insecure-extension-access --skip-version-check --no-download-sd-model --skip-torch-cuda-test "
 EXPOSE 7860
-# RUN chmod +x /docker/entrypoint.sh
-# ENTRYPOINT ["/docker/entrypoint.sh"]
-CMD python launch.py --listen --api --port 7860 --precision full --no-half ${CLI_ARGS}
+ENTRYPOINT ["/docker/entrypoint.sh"]
+CMD python -u webui.py --listen --port 7860 ${CLI_ARGS}
