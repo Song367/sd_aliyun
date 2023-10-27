@@ -94,4 +94,4 @@ ENV CLI_ARGS="--xformers  --disable-safe-unpickle --no-half-vae --enable-insecur
 EXPOSE 7860
 # RUN chmod +x /docker/entrypoint.sh
 # ENTRYPOINT ["/docker/entrypoint.sh"]
-CMD python launch.py --listen --api --port 7860 ${CLI_ARGS}
+CMD python launch.py --listen --api --port 7860 --precision full --no-half ${CLI_ARGS}
