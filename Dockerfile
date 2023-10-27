@@ -81,6 +81,11 @@ RUN apt-get install -y wget
 # RUN cd ${ROOT}/models/Stable-diffusion && wget https://huggingface.co/casque/majicmixRealistic_v7/resolve/main/majicmixRealistic_v7.safetensors
 COPY . /docker
 
+ENV SD_BUILTIN=/built-in
+COPY ./sd-resource ${SD_BUILTIN}
+RUN cp -R ${ROOT}/scripts ${SD_BUILTIN}/scripts && \
+    cp -R ${ROOT}/extensions-builtin/* ${SD_BUILTIN}/extensions-builtin/
+
 # RUN \
 #   python3 /docker/info.py ${ROOT}/modules/ui.py && \
 #   mv ${ROOT}/style.css ${ROOT}/user.css && \
