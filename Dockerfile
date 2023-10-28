@@ -22,14 +22,6 @@ FROM alpine:3.17 as xformers
 RUN apk add --no-cache aria2
 RUN aria2c -x 5 --dir / --out wheel.whl 'https://github.com/AbdBarho/stable-diffusion-webui-docker/releases/download/6.0.0/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64-pytorch201.whl'
 
-FROM python:3.10.9-slim as extensions
-
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install transformers==4.30.2 && \
-    pip install torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cu118
-
-COPY ./init /init
-RUN mkdir -p /clip-vit-large-patch14 && python /init/clip-vit-large-patch14.py /clip-vit-large-patch14
 
 FROM python:3.10.9-slim as  sd_base
 
@@ -48,6 +40,9 @@ RUN --mount=type=cache,target=/cache --mount=type=cache,target=/root/.cache/pip 
   https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-linux_x86_64.whl && \
   pip install /cache/torch-2.0.1-cp310-cp310-linux_x86_64.whl torchvision --index-url https://download.pytorch.org/whl/cu118 && \
   pip install transformers==4.30.2 
+
+COPY ./init /init
+RUN mkdir -p /clip-vit-large-patch14 && python /init/clip-vit-large-patch14.py /clip-vit-large-patch14
 
 RUN --mount=type=cache,target=/root/.cache/pip \
   git clone https://github.com/Song367/stable-diffusion-webui.git && \
@@ -95,7 +90,7 @@ COPY ./sd-resource ${SD_BUILTIN}
 RUN cp -R ${ROOT}/scripts ${SD_BUILTIN}/scripts && \
     cp -R ${ROOT}/extensions-builtin/* ${SD_BUILTIN}/extensions-builtin/
 
-COPY --from=extensions /clip-vit-large-patch14  ${SD_BUILTIN}/root/.cache/huggingface/hub/
+COPY /clip-vit-large-patch14  ${SD_BUILTIN}/root/.cache/huggingface/hub/
 # RUN \
 #   python3 /docker/info.py ${ROOT}/modules/ui.py && \
 #   mv ${ROOT}/style.css ${ROOT}/user.css && \
