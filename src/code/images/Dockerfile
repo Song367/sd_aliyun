@@ -1,11 +1,4 @@
-# syntax = docker/dockerfile:experimental
 
-# # WebUI 基础镜像
-# # 包含 WebUI、相关依赖、插件、Lora、VAE
-
-############################# 
-#     clone repositories    #
-#############################
 FROM alpine/git:2.36.2 as repositories
 
 COPY clone.sh /clone.sh
