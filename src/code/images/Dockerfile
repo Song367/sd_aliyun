@@ -35,9 +35,10 @@ RUN aria2c -x 5 --dir / --out wheel.whl 'https://github.com/AbdBarho/stable-diff
 
 FROM python:3.10.9-slim as extensions
 
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install transformers[sentencepiece] sentencepiece && \
-    pip install torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cu118
+RUN --mount=type=cache,target=/cache --mount=type=cache,target=/root/.cache/pip \
+  aria2c -x 5 --dir /cache --out torch-2.0.1-cp310-cp310-linux_x86_64.whl -c \
+  https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-linux_x86_64.whl && \
+  pip install /cache/torch-2.0.1-cp310-cp310-linux_x86_64.whl torchvision --index-url https://download.pytorch.org/whl/cu118
 
 COPY ./init /init
 RUN mkdir -p /sd-prompt-translator && python /init/sd-prompt-translator.py /sd-prompt-translator
