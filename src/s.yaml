@@ -1,0 +1,121 @@
+edition: 1.0.0 #  命令行YAML规范版本，遵循语义化版本（Semantic Versioning）规范
+name: fc-stable-diffusion
+access: default
+vars:
+  region: "{{ region }}" 
+  serviceName: "{{ serviceName }}"
+  functionName: "{{ functionName }}" 
+  imageUrl: "registry.{{region}}.aliyuncs.com/aliyun-fc/fc-stable-diffusion:{{ if type === '动漫风格' }}anime-v8{{ else if type === '真人风格'}}realman-v8{{ else }}sd1.5-v8{{/if}}" 
+  filemgrToken: "{{ filemgrToken || '' }}"
+  extraArgs: "{{ extraArgs || '' }}{{ if webuiEnabled === false }} --nowebui{{/if}}{{ if webuiAuth !== '' && webuiAuth !== undefined }} --gradio-auth {{webuiAuth}}{{/if}}{{ if apiEnabled }} --api{{/if}}{{ if apiAuth !== '' && apiAuth !== undefined }} --api-auth {{apiAuth}}{{/if}}"
+  enableCollect: "{{ enableCollect || '' }}"
+  service:
+    name: ${vars.serviceName}
+    description: 'stable-diffusion 部署到函数计算'
+    internetAccess: true
+    {{ if roleArn !== '' && roleArn !== undefined }}role: "{{roleArn}}"{{/if}}
+    {{ if nasEnabled === true }}nasConfig: auto{{/if}}
+
+services:
+  stable-diffusion:
+    component: fc
+    actions: 
+      post-deploy: 
+        - component: fc ondemand put --qualifier LATEST --max 1
+    props:
+      region: ${vars.region}
+      service: ${vars.service}
+      function:
+        name: ${vars.functionName}
+        description: Stable Diffusion WebUI 函数
+        handler: index.handler
+        timeout: 600
+        diskSize: 512
+        caPort: 7860
+        instanceType: fc.gpu.tesla.1
+        runtime: custom-container
+        cpu: 8
+        customContainerConfig:
+          args: ''
+          accelerationType: Default
+          image: ${vars.imageUrl}
+          accelerationInfo:
+            status: Preparing
+          command: ''
+          webServerMode: true
+        instanceConcurrency: 100
+        memorySize: 32768
+        gpuMemorySize: 16384
+        asyncConfiguration: {}
+        environmentVariables:
+          EXTRA_ARGS: ${vars.extraArgs}
+          ENABLE_COLLECT: ${vars.enableCollect}
+      triggers:
+        - name: defaultTrigger
+          description: ''
+          type: http
+          qualifier: LATEST
+          config:
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            authType: anonymous
+            disableURLInternet: false
+      customDomains:
+        - domainName: auto
+          protocol: HTTP
+          routeConfigs:
+            - path: /*
+
+  {{ if roleArn !== '' && roleArn !== undefined }} 
+  filemgr:
+    component: fc 
+    actions: 
+      post-deploy: 
+        - component: fc ondemand put --qualifier LATEST --max 1
+    props:
+      region: ${vars.region}
+      service: ${vars.service}
+      function:
+        name: "admin"
+        description: '模型管理辅助工具'
+        codeUri: './code/filemgr'
+        runtime: custom
+        timeout: 7200
+        memorySize: 3072
+        cpu: 2.0
+        diskSize: 512
+        instanceConcurrency: 16
+        caPort: 9000
+        customRuntimeConfig:
+          command:
+            - ./server
+        environmentVariables:
+          TOKEN: ${vars.filemgrToken}
+          ENABLE_COLLECT: ${vars.enableCollect}
+          SD_VERSION: ""
+          SD_FUNCTION_NAME: ${stable-diffusion.props.function.name}
+          SD_DOMAIN: ${stable-diffusion.output.url.custom_domain[0].domain}
+        layers:
+          - "acs:fc:${vars.region}:official:layers/ServerlessDevs/versions/1"
+          - "acs:fc:${vars.region}:official:layers/Python310/versions/2"
+      triggers:
+        - name: httpTrigger
+          type: http
+          config:
+            authType: anonymous
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - HEAD
+              - OPTIONS
+      customDomains:
+        - domainName: auto
+          protocol: HTTP
+          routeConfigs:
+            - path: /*
+  {{/if}}
