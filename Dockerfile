@@ -88,7 +88,7 @@ RUN apt-get install -y wget
 # RUN cd ${ROOT}/models/Stable-diffusion && wget https://huggingface.co/casque/majicmixRealistic_v7/resolve/main/majicmixRealistic_v7.safetensors
 COPY . /docker
 
-FROM as sd_base as base
+FROM sd_base as base
 
 ENV SD_BUILTIN=/built-in
 COPY ./sd-resource ${SD_BUILTIN}
