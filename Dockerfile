@@ -23,7 +23,7 @@ RUN apk add --no-cache aria2
 RUN aria2c -x 5 --dir / --out wheel.whl 'https://github.com/AbdBarho/stable-diffusion-webui-docker/releases/download/6.0.0/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64-pytorch201.whl'
 
 
-FROM python:3.10.9-slim as extensions
+FROM python:3.10.9-slim
 
 ENV DEBIAN_FRONTEND=noninteractive PIP_PREFER_BINARY=1
 
@@ -88,8 +88,6 @@ COPY ./sd-resource ${SD_BUILTIN}
 RUN cp -R ${ROOT}/scripts ${SD_BUILTIN}/scripts && \
     cp -R ${ROOT}/extensions-builtin/* ${SD_BUILTIN}/extensions-builtin/
 
-# 启动的时候会下载这个
-COPY --from=extensions /clip-vit-large-patch14  ${SD_BUILTIN}/root/.cache/huggingface/hub/
 
 # RUN \
 #   python3 /docker/info.py ${ROOT}/modules/ui.py && \
