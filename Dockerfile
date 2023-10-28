@@ -90,7 +90,7 @@ RUN cp -R ${ROOT}/scripts ${SD_BUILTIN}/scripts && \
 COPY ./init /init
 RUN mkdir -p /clip-vit-large-patch14 && python /init/clip-vit-large-patch14.py /clip-vit-large-patch14
 
-COPY /clip-vit-large-patch14  ${SD_BUILTIN}/root/.cache/huggingface/hub/
+RUN  ${SD_BUILTIN}/root/.cache/huggingface/hub/  /clip-vit-large-patch14 
 # RUN \
 #   python3 /docker/info.py ${ROOT}/modules/ui.py && \
 #   mv ${ROOT}/style.css ${ROOT}/user.css && \
