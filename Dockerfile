@@ -25,7 +25,7 @@ RUN aria2c -x 5 --dir / --out wheel.whl 'https://github.com/AbdBarho/stable-diff
 FROM python:3.10.9-slim as extensions
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install transformers[sentencepiece] sentencepiece && \
+    pip install transformers==4.30.2 && \
     pip install torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cu118
 
 COPY ./init /init
