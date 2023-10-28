@@ -31,7 +31,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY ./init /init
 RUN mkdir -p /clip-vit-large-patch14 && python /init/clip-vit-large-patch14.py /clip-vit-large-patch14
 
-FROM python:3.10.9-slim as as sd_base
+FROM python:3.10.9-slim as  sd_base
 
 ENV DEBIAN_FRONTEND=noninteractive PIP_PREFER_BINARY=1
 
