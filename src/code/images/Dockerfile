@@ -138,9 +138,9 @@ COPY --from=models /codeformer-v0.1.0.pth ${SD_BUILTIN}/models/Codeformer/codefo
 # roop 554M + 
 COPY --from=models /inswapper_128.onnx ${SD_BUILTIN}/models/roop/inswapper_128.onnx
 COPY --from=models /detector.onnx ${SD_BUILTIN}/root/.ifnude/detector.onnx
-RUN --mount=type=bind,target=/buffalo_l.zip,from=models,source=/buffalo_l.zip \
-    mkdir -p ${SD_BUILTIN}/root/.insightface/models && \
-    unzip /buffalo_l.zip -d ${SD_BUILTIN}/root/.insightface/models
+# RUN --mount=type=bind,target=/buffalo_l.zip,from=models,source=/buffalo_l.zip \
+#     mkdir -p ${SD_BUILTIN}/root/.insightface/models && \
+#     unzip /buffalo_l.zip -d ${SD_BUILTIN}/root/.insightface/models
 
 # controlnet 
 COPY --from=models /control_v11p_sd15_scribble.pth ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.pth
