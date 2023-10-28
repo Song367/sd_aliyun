@@ -7,7 +7,7 @@ COPY clone.sh /clone.sh
 #     && rm -rf data assets **/*.ipynb
 
 RUN . /clone.sh stable-diffusion-stability-ai https://github.com/Stability-AI/stablediffusion.git cf1d67a6fd5ea1aa600c4df58e5b47da45f6bdbf \
-    && rm -rf assets data/**/*.png data/**/*.jpg data/**/*.gif
+  && rm -rf assets data/**/*.png data/**/*.jpg data/**/*.gif
 
 RUN . /clone.sh generative-models https://github.com/Stability-AI/generative-models.git 5c10deee76adad0032b412294130090932317a87 \
     && rm -rf assets data/**/*.png data/**/*.jpg data/**/*.gif
@@ -53,16 +53,16 @@ FROM alpine:3.17 as models
 RUN apk add --no-cache aria2
 
 RUN aria2c -x 8 --dir "/" --out "codeformer-v0.1.0.pth" "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth"  
-RUN aria2c -x 8 --dir "/" --out "detection_Resnet50_Final.pth" "https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth" 
-RUN aria2c -x 8 --dir "/" --out "parsing_parsenet.pth" "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth" 
+# RUN aria2c -x 8 --dir "/" --out "detection_Resnet50_Final.pth" "https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth" 
+# RUN aria2c -x 8 --dir "/" --out "parsing_parsenet.pth" "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth" 
 RUN aria2c -x 8 --dir "/" --out "model_base_caption_capfilt_large.pth" "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_caption_capfilt_large.pth" 
-RUN aria2c -x 8 --dir "/" --out "model-resnet_custom_v3.pt" "https://github.com/AUTOMATIC1111/TorchDeepDanbooru/releases/download/v1/model-resnet_custom_v3.pt" 
+# RUN aria2c -x 8 --dir "/" --out "model-resnet_custom_v3.pt" "https://github.com/AUTOMATIC1111/TorchDeepDanbooru/releases/download/v1/model-resnet_custom_v3.pt" 
 RUN aria2c -x 8 --dir "/" --out "inswapper_128.onnx" "https://drive.google.com/u/0/uc?id=1krOLgjW2tAPaqV-Bw4YALz0xT5zlb5HF&export=download" 
 RUN aria2c -x 8 --dir "/" --out "detector.onnx" "https://huggingface.co/s0md3v/nudity-checker/resolve/main/detector.onnx" 
 RUN aria2c -x 8 --dir "/" --out "control_v11p_sd15_scribble.pth" "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11p_sd15_scribble.pth"
 RUN aria2c -x 8 --dir "/" --out "control_v11p_sd15_scribble.yaml" "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11p_sd15_scribble.yaml"
-RUN aria2c -x 8 --dir "/" --out "control_v1p_sd15_illumination.safetensors" "https://huggingface.co/ioclab/ioc-controlnet/resolve/main/models/control_v1p_sd15_illumination.safetensors"
-RUN aria2c -x 8 --dir "/" --out "buffalo_l.zip" "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip"
+# RUN aria2c -x 8 --dir "/" --out "control_v1p_sd15_illumination.safetensors" "https://huggingface.co/ioclab/ioc-controlnet/resolve/main/models/control_v1p_sd15_illumination.safetensors"
+# RUN aria2c -x 8 --dir "/" --out "buffalo_l.zip" "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip"
   
 # ############################# 
 # #           dist            #
@@ -121,19 +121,19 @@ COPY --from=extensions /sd-prompt-translator  ${SD_BUILTIN}/extensions/sd-prompt
 # COPY --from=extensions /bert-base-uncased-cache/*  ${SD_BUILTIN}/root/.cache/huggingface/hub/
 
 # 启动的时候会下载这个
-COPY --from=extensions /clip-vit-large-patch14  ${SD_BUILTIN}/root/.cache/huggingface/hub/
+# COPY --from=extensions /clip-vit-large-patch14  ${SD_BUILTIN}/root/.cache/huggingface/hub/
 
 # 面部修复 + 高分辨率修复 359M + 104M + 81.4M
 COPY --from=models /codeformer-v0.1.0.pth ${SD_BUILTIN}/models/Codeformer/codeformer-v0.1.0.pth
-COPY --from=models /detection_Resnet50_Final.pth ${SD_BUILTIN}/repositories/CodeFormer/weights/facelib/detection_Resnet50_Final.pth
-COPY --from=models /parsing_parsenet.pth ${SD_BUILTIN}/repositories/CodeFormer/weights/facelib/parsing_parsenet.pth
+# COPY --from=models /detection_Resnet50_Final.pth ${SD_BUILTIN}/repositories/CodeFormer/weights/facelib/detection_Resnet50_Final.pth
+# COPY --from=models /parsing_parsenet.pth ${SD_BUILTIN}/repositories/CodeFormer/weights/facelib/parsing_parsenet.pth
 
 # CLIP 反向推导提示词 614M? 890M?
 # https://github.com/AUTOMATIC1111/stable-diffusion-webui/discussions/10574
 # COPY --from=models /model_base_caption_capfilt_large.pth ${SD_BUILTIN}/models/BLIP/model_base_caption_capfilt_large.pth 
 
 # DeepBooru 反向推导提示词 614M
-COPY --from=models /model-resnet_custom_v3.pt ${SD_BUILTIN}/models/torch_deepdanbooru/model-resnet_custom_v3.pt
+# COPY --from=models /model-resnet_custom_v3.pt ${SD_BUILTIN}/models/torch_deepdanbooru/model-resnet_custom_v3.pt
 
 # roop 554M + 
 COPY --from=models /inswapper_128.onnx ${SD_BUILTIN}/models/roop/inswapper_128.onnx
@@ -145,10 +145,10 @@ RUN --mount=type=bind,target=/buffalo_l.zip,from=models,source=/buffalo_l.zip \
 # controlnet 
 COPY --from=models /control_v11p_sd15_scribble.pth ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.pth
 COPY --from=models /control_v11p_sd15_scribble.yaml ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.yaml
-COPY --from=models /control_v1p_sd15_illumination.safetensors ${SD_BUILTIN}/models/ControlNet/control_v1p_sd15_illumination.safetensors
+# COPY --from=models /control_v1p_sd15_illumination.safetensors ${SD_BUILTIN}/models/ControlNet/control_v1p_sd15_illumination.safetensors
 
 # adetailer
-COPY --from=extensions /models--Bingsu--adetailer ${SD_BUILTIN}/root/.cache/huggingface/hub/
+# COPY --from=extensions /models--Bingsu--adetailer ${SD_BUILTIN}/root/.cache/huggingface/hub/
 
 COPY ./config.json /docker/config.json
 COPY ./entrypoint.sh /docker/entrypoint.sh
