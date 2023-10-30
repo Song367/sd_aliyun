@@ -92,7 +92,7 @@ RUN ls -l /init
 RUN mkdir -p /clip-vit-large-patch14 && python /init/clip-vit-large-patch14.py /clip-vit-large-patch14 
 RUN ls -l /root/.cache 
 RUN  ls /clip-vit-large-patch14 && \
-  cp -R /clip-vit-large-patch14/*  ${SD_BUILTIN}/root/.cache/huggingface/hub/
+  cp -R /clip-vit-large-patch14/*  /root/.cache/huggingface/hub/
 
 # RUN \
 #   python3 /docker/info.py ${ROOT}/modules/ui.py && \
