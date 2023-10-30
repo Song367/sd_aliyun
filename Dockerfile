@@ -89,9 +89,9 @@ RUN cp -R ${ROOT}/scripts ${SD_BUILTIN}/scripts && \
     
 COPY ./init /init
 RUN ls -l /init
-RUN mkdir -p /clip-vit-large-patch14 && python /init/clip-vit-large-patch14.py /clip-vit-large-patch14 && \
-  ls -l /root/.cache
-  ls /clip-vit-large-patch14 && \
+RUN mkdir -p /clip-vit-large-patch14 && python /init/clip-vit-large-patch14.py /clip-vit-large-patch14 
+RUN ls -l /root/.cache 
+RUN  ls /clip-vit-large-patch14 && \
   cp -R /clip-vit-large-patch14/*  ${SD_BUILTIN}/root/.cache/huggingface/hub/
 
 # RUN \
