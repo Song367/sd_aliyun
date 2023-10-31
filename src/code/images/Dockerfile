@@ -41,10 +41,10 @@ FROM alpine/git:2.36.2 as extensions
 
 COPY clone.sh /clone.sh
 
-# adetailer 人脸修复插件
-RUN . /clone.sh /extensions/adetailer https://github.com/Bing-su/adetailer.git v23.9.3 && \
-    cd /extensions/adetailer && \
-    rm -rf .github .vscode *.md .gitignore
+# # adetailer 人脸修复插件
+# RUN . /clone.sh /extensions/adetailer https://github.com/Bing-su/adetailer.git v23.9.3 && \
+#     cd /extensions/adetailer && \
+#     rm -rf .github .vscode *.md .gitignore
 
 # sd-prompt-translator 中文提示词支持
 # RUN . /clone.sh /extensions/sd-prompt-translator https://github.com/studyzy/sd-prompt-translator.git bfe88c39ff020f22ef3e81b317862cdbe6e0f8af && \
@@ -173,6 +173,7 @@ FROM python:3.10.9-slim as download_huggingface
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install transformers[sentencepiece] sentencepiece && \
+    python -m pip install --upgrade pip && \
     pip install torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cu118
 
 COPY ./init /init
