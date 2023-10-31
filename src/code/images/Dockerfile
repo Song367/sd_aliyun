@@ -329,7 +329,7 @@ COPY --from=download_huggingface /models--Bingsu--adetailer ${SD_BUILTIN}/root/.
 COPY --from=download_models  /milkingMachine_v11.safetensors ${SD_BUILTIN}/models/Lora/milkingMachine_v11.safetensors
 COPY --from=download_models  /blingdbox_v1_mix.safetensors ${SD_BUILTIN}/models/Lora/blingdbox_v1_mix.safetensors
 COPY --from=download_models  /GachaSpliash4.safetensors ${SD_BUILTIN}/models/Lora/GachaSpliash4.safetensors
-COPY --from=download_models  /Colorwater_v4.safetensors ${SD_BUILTIN}/models/Lora/Colorwater_v4.safetensors 
+# COPY --from=download_models  /Colorwater_v4.safetensors ${SD_BUILTIN}/models/Lora/Colorwater_v4.safetensors 
 
 
 
