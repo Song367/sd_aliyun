@@ -308,16 +308,16 @@ COPY --from=download_huggingface /sd-prompt-translator  ${SD_BUILTIN}/extensions
 # COPY --from=download_extensions /model_base_caption_capfilt_large.pth ${SD_BUILTIN}/models/BLIP/model_base_caption_capfilt_large.pth 
 
 # roop 554M + 
-# COPY --from=download_extensions /inswapper_128.onnx ${SD_BUILTIN}/models/roop/inswapper_128.onnx
-# COPY --from=download_extensions /detector.onnx ${SD_BUILTIN}/root/.ifnude/detector.onnx
-# RUN --mount=type=bind,from=download_extensions,source=/buffalo_l.zip,target=/buffalo_l.zip \
-#     mkdir -p ${SD_BUILTIN}/root/.insightface/models && \
-#     unzip /buffalo_l.zip -d ${SD_BUILTIN}/root/.insightface/models
+COPY --from=download_extensions /inswapper_128.onnx ${SD_BUILTIN}/models/roop/inswapper_128.onnx
+COPY --from=download_extensions /detector.onnx ${SD_BUILTIN}/root/.ifnude/detector.onnx
+RUN --mount=type=bind,from=download_extensions,source=/buffalo_l.zip,target=/buffalo_l.zip \
+    mkdir -p ${SD_BUILTIN}/root/.insightface/models && \
+    unzip /buffalo_l.zip -d ${SD_BUILTIN}/root/.insightface/models
 
 # controlnet 
-# COPY --from=download_extensions /control_v11p_sd15_scribble.pth ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.pth
-# COPY --from=download_extensions /control_v11p_sd15_scribble.yaml ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.yaml
-COPY --from=download_extensions /control_v1p_sd15_illumination.safetensors ${SD_BUILTIN}/models/ControlNet/control_v1p_sd15_illumination.safetensors
+COPY --from=download_extensions /control_v11p_sd15_scribble.pth ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.pth
+COPY --from=download_extensions /control_v11p_sd15_scribble.yaml ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.yaml
+# COPY --from=download_extensions /control_v1p_sd15_illumination.safetensors ${SD_BUILTIN}/models/ControlNet/control_v1p_sd15_illumination.safetensors
 
 # adetailer
 COPY --from=download_huggingface /models--Bingsu--adetailer ${SD_BUILTIN}/root/.cache/huggingface/hub/
