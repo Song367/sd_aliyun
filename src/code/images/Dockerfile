@@ -277,16 +277,6 @@ RUN sed -i ${SD_BUILTIN}/ui-config.json -e 's@"txt2img/Negative prompt/value": "
 COPY ./config.json ./entrypoint.sh ./info.py ./sd-agent /docker/
 RUN chmod 777 /docker/sd-agent
 
-############################# 
-#      最小可运行版本       #
-#############################
-
-FROM base as lite
-
-RUN --mount=type=bind,from=execute,source=/,target=/execute \
-    cp -R /execute/${SD_BUILTIN}/ /${SD_BUILTIN} && \
-    cp -R /execute/docker/ /docker && \
-    cp /execute/IMAGE_TAG /IMAGE_TAG
 
 ############################# 
 #         内置模型          #
@@ -313,10 +303,16 @@ COPY --from=download_extensions /detector.onnx ${SD_BUILTIN}/root/.ifnude/detect
 RUN --mount=type=bind,from=download_extensions,source=/buffalo_l.zip,target=/buffalo_l.zip \
     mkdir -p ${SD_BUILTIN}/root/.insightface/models && \
     unzip /buffalo_l.zip -d ${SD_BUILTIN}/root/.insightface/models
+# 安装 roop 依赖
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r ${SD_BUILTIN}/extensions/sd-webui-roop/requirements.txt
 
 # controlnet 
 COPY --from=download_extensions /control_v11p_sd15_scribble.pth ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.pth
 COPY --from=download_extensions /control_v11p_sd15_scribble.yaml ${SD_BUILTIN}/models/ControlNet/control_v11p_sd15_scribble.yaml
+# 安装controlnet 依赖
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r ${SD_BUILTIN}/extensions/sd-webui-controlnet/requirements.txt
 # COPY --from=download_extensions /control_v1p_sd15_illumination.safetensors ${SD_BUILTIN}/models/ControlNet/control_v1p_sd15_illumination.safetensors
 
 # adetailer
@@ -332,17 +328,3 @@ COPY --from=download_huggingface /models--Bingsu--adetailer ${SD_BUILTIN}/root/.
 # COPY --from=download_models  /Colorwater_v4.safetensors ${SD_BUILTIN}/models/Lora/Colorwater_v4.safetensors 
 
 
-
-
-############################# 
-#         真人版本          #
-#############################
-
-FROM model-base as realman
-
-COPY --from=download_models  /chilloutmix_NiPrunedFp16Fix.safetensors ${SD_BUILTIN}/models/Stable-diffusion/chilloutmix_NiPrunedFp16Fix.safetensors
-
-RUN --mount=type=bind,from=execute,source=/,target=/execute \
-    cp -R /execute/${SD_BUILTIN}/* ${SD_BUILTIN} && \
-    cp -R /execute/docker/ /docker && \
-    cp /execute/IMAGE_TAG /IMAGE_TAG
