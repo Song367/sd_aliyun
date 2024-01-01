@@ -242,6 +242,7 @@ COPY --from=download_huggingface /clip-vit-large-patch14  ${SD_BUILTIN}/root/.ca
 # DeepBooru 反向推导提示词 614M
 # COPY --from=download_sdwebui /model-resnet_custom_v3.pt ${SD_BUILTIN}/models/torch_deepdanbooru/model-resnet_custom_v3.pt
 
+RUN chmod +x /docker/entrypoint.sh
 ENTRYPOINT ["/docker/entrypoint.sh"]
 EXPOSE 7860
 
