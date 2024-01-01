@@ -45,7 +45,9 @@ RUN --mount=type=cache,target=/cache --mount=type=cache,target=/root/.cache/pip 
 RUN --mount=type=cache,target=/root/.cache/pip \
   git clone https://github.com/Song367/stable-diffusion-webui.git && \
   cd stable-diffusion-webui && git checkout master && \
-  pip install -r requirements_versions.txt
+  pip install -r requirements_versions.txt && \
+  python -m pip install --upgrade pip && \
+  pip install -U httpx=0.24.1
 
 RUN --mount=type=cache,target=/root/.cache/pip  \
   --mount=type=bind,from=xformers,source=/wheel.whl,target=/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64.whl \
