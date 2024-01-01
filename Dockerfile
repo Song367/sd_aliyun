@@ -85,8 +85,10 @@ ENV SD_BUILTIN=/built-in
 COPY ./sd-resource ${SD_BUILTIN}
 RUN cp -R ${ROOT}/scripts ${SD_BUILTIN}/scripts && \
     cp -R ${ROOT}/extensions-builtin/* ${SD_BUILTIN}/extensions-builtin/
-RUN pip install -r ${SD_BUILTIN}/extensions/sd-webui-controlnet/requirements.txt
-RUN pip install -r ${SD_BUILTIN}/extensions/sd-webui-roop/requirements.txt
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+  pip install -r ${SD_BUILTIN}/extensions/sd-webui-controlnet/requirements.txt &&\
+  pip install -r ${SD_BUILTIN}/extensions/sd-webui-roop/requirements.txt
 
 # RUN \
 #   python3 /docker/info.py ${ROOT}/modules/ui.py && \
